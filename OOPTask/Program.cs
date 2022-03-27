@@ -2,6 +2,7 @@
 
 using System.Security.Cryptography;
 using System.Drawing;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace OOPTask
 {
@@ -39,6 +40,10 @@ namespace OOPTask
             //     Console.WriteLine($"Your current balance is {money}AM$");
             //    
             var PlayerDB = new PlayerContext();
+            var GuildDB = new GuildContext();
+            Console.WriteLine("Type enter to delete db");
+            Console.ReadLine();
+            GuildDB.DropDb();
         }
         
     }

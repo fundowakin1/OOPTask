@@ -7,5 +7,7 @@
         public string Name { get; set; }
         public bool IsMage { get; set; }
         public bool IsVampire { get; set; }
+
+        public Member Member { get; set; }
     }
 }
