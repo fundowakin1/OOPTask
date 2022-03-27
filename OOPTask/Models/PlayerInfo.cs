@@ -7,5 +7,7 @@
         public string Sex { get; set; }
         public string Race { get; set; }
         public int AmountOfMoney { get; set; }
+        
+        public Player Player { get; set; }
     }
 }
