@@ -1,4 +1,4 @@
-﻿namespace OOPTask
+﻿namespace OOPTask.Models
 {
     public class PlayerEntity
     {

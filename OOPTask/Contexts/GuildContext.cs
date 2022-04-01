@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OOPTask.Models;
 using OOPTask.Seed;
 
 namespace OOPTask
@@ -32,6 +33,7 @@ namespace OOPTask
                 .WithOne(y => y.MemberInfoEntity).HasForeignKey<MemberInfoEntity>(k => k.MemberId);
             
             GuildSeed.Seeding(modelBuilder);
+            MemberSeed.Seeding(modelBuilder);
         }
     }
 }

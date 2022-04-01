@@ -34,8 +34,8 @@ namespace OOPTask
             //     
             //     Console.WriteLine($"Your current balance is {money}AM$");
             //    
-            var PlayerDB = new PlayerContext();
-            var GuildDB = new GuildContext();
+            var playerDb = new PlayerContext();
+            var guildDB = new GuildContext();
             Console.WriteLine("Type enter to delete db");
             Console.ReadLine();
         }
