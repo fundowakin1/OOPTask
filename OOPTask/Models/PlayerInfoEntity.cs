@@ -1,6 +1,6 @@
 ﻿namespace OOPTask
 {
-    public class PlayerInfo
+    public class PlayerInfoEntity
     {
         public int PlayerId { get; set; }
         public string Name { get; set; }
@@ -8,6 +8,6 @@
         public string Race { get; set; }
         public int AmountOfMoney { get; set; }
         
-        public Player Player { get; set; }
+        public PlayerEntity PlayerEntity { get; set; }
     }
 }

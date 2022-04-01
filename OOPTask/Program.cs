@@ -1,9 +1,4 @@
 ﻿using System;
-
-using System.Security.Cryptography;
-using System.Drawing;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-
 namespace OOPTask
 {
     class Program
@@ -43,7 +38,6 @@ namespace OOPTask
             var GuildDB = new GuildContext();
             Console.WriteLine("Type enter to delete db");
             Console.ReadLine();
-            GuildDB.DropDb();
         }
         
     }

@@ -1,9 +1,9 @@
 ﻿namespace OOPTask
 {
-    public class Player
+    public class PlayerEntity
     {
         public int Id { get; set; }
         public int AmountOfTurns { get; set; }
-        public PlayerInfo PlayerInfo { get; set; }
+        public PlayerInfoEntity PlayerInfoEntity { get; set; }
     }
 }
