@@ -6,8 +6,8 @@
         public string Name { get; set; }
         public string Sex { get; set; }
         public string Race { get; set; }
-        public int AmountOfMoney { get; set; }
+        public decimal AmountOfMoney { get; set; }
         
-        public PlayerEntity PlayerEntity { get; set; }
+        public virtual PlayerEntity PlayerEntity { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace OOPTask.GameEntities.Player
+﻿namespace OOPTask.GameEntities.Players
 {
     public enum Races
     {
