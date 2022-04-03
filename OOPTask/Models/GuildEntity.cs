@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using OOPTask.Models;
 
-namespace OOPTask
+namespace OOPTask.Models
 {
     public class GuildEntity
     {

@@ -2,7 +2,7 @@
 using OOPTask.Models;
 using OOPTask.Seed;
 
-namespace OOPTask
+namespace OOPTask.Contexts
 {
     public class GuildContext : DbContext
     {

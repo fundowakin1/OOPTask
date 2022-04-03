@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 using OOPTask.Models;
 
-namespace OOPTask
+namespace OOPTask.Contexts
 {
     public class PlayerContext : DbContext
     {
