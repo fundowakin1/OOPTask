@@ -12,8 +12,8 @@ namespace OOPTask
             var playerDb = new PlayerContext();
             var guildDB = new GuildContext();
             var player = new Player("Bububu", "man", 2, playerDb);
-            var thiefsGuild = new ThievesGuild(guildDB, "Guild of Thieves, Cutpurses and Allied Trades");
-            thiefsGuild.InteractionWithPlayersMoney(player);
+            var assassinsGuild = new AssassinsGuild(guildDB, "Ankh-Morpork Assassins' Guild");
+            assassinsGuild.InteractionWithPlayersMoney(player);
             player.PutPlayerToDb();
             
         }

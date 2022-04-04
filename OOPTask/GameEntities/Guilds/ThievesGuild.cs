@@ -8,7 +8,6 @@ namespace OOPTask.GameEntities.Guilds
 {
     public class ThievesGuild : Guild, IChoosingMember
     {
-        public MemberEntity ChosenMember { get; set; }
         public ThievesGuild(GuildContext context, string guildName) : base(context, guildName)
         {
         }
@@ -19,6 +18,7 @@ namespace OOPTask.GameEntities.Guilds
             var id = _membersId[chosenMemberId];
             ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
+        
         public void InteractionWithPlayersMoney(Player player)
         {
             ChoosingMember();
@@ -34,6 +34,12 @@ namespace OOPTask.GameEntities.Guilds
                 {
                     case "1":
                         player.AmountOfMoney -= 10;
+                        if (player.AmountOfMoney<0)
+                        {
+                            Console.WriteLine("No money, no life(");
+                            player.IsAlive = false;
+                            break;
+                        }
                         Console.WriteLine("You peacefully gave your cash to this thief.");
                         break;
                     case "2":
@@ -54,7 +60,6 @@ namespace OOPTask.GameEntities.Guilds
                 if (!player.IsAlive || playersAnswer=="1")
                     break;
             }
-            
         }
     }
 }
