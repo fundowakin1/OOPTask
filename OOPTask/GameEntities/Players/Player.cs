@@ -7,16 +7,16 @@ namespace OOPTask.GameEntities.Players
     public class Player
     {
         public string Name { get; set; }
-        public string Sex { get; set; }
+        public string Gender { get; set; }
         public string Race { get; set; }
         public decimal AmountOfMoney { get; set; } = 100m;
         public bool IsAlive { get; set; }
         private PlayerContext _context;
 
-        public Player(string name, string sex, int raceId, PlayerContext context)
+        public Player(string name, string gender, int raceId, PlayerContext context)
         {
             Name = name;
-            Sex = sex;
+            Gender = gender;
             IsAlive = true;
             Race = raceId switch
             {
@@ -46,7 +46,7 @@ namespace OOPTask.GameEntities.Players
             {
                 AmountOfMoney = AmountOfMoney,
                 Name = Name,
-                Sex = Sex,
+                Gender = Gender,
                 Race = Race,
                 PlayerId = _context.Players.Count()
             });

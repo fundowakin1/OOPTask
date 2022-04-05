@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Channels;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
 
@@ -26,6 +25,7 @@ namespace OOPTask.GameEntities.Guilds
             Console.WriteLine("You found out that you’re under Assassins Guild contract");
             Console.WriteLine("What would you do?");
             Console.WriteLine("You can pay some money to hire an assassin for your protection (type \"1\") or you can pray for your life (type \"2\").");
+            
             ChangingOccupationStatus();
             var notOccupiedAssassins = _occupationDictionary.Where(x => x.Value.Item1).ToList();
             var numberOfRetries = 2;
@@ -67,6 +67,7 @@ namespace OOPTask.GameEntities.Guilds
                     case "2":
                         player.IsAlive = false;
                         Console.WriteLine("You decided to choose death! Assassin kills you!");
+                        
                         break;
                     default:
                         Console.WriteLine("Please, write 1 or 2!");
@@ -80,17 +81,26 @@ namespace OOPTask.GameEntities.Guilds
                         break;
                 }
                 if (!player.IsAlive || playersAnswer=="1")
+                {
+                    Console.WriteLine(); 
                     break;
+                }
             }
         }
         
         private void ChangingOccupationStatus()
         {
+            for (int i = 1; i < _occupationDictionary.Count; i++)
+            {
+                var valueTuple = _occupationDictionary[i];
+                valueTuple.Item1 = true;
+                _occupationDictionary[i] = valueTuple;
+            }
             var counter = 0;
             while (counter<_occupationDictionary.Count/2)
             {
                 var random = new Random();
-                var assassinId = random.Next(0, _occupationDictionary.Count);
+                var assassinId = random.Next(1 , _occupationDictionary.Count);
                 var valueTuple = _occupationDictionary[assassinId];
                 if (valueTuple.Item1)
                 {

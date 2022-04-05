@@ -58,7 +58,10 @@ namespace OOPTask.GameEntities.Guilds
                         break;
                 }
                 if (!player.IsAlive || playersAnswer=="1")
+                {
+                    Console.WriteLine(); 
                     break;
+                }
             }
         }
     }
