@@ -8,6 +8,6 @@
         public bool IsMage { get; set; }
         public bool IsVampire { get; set; }
 
-        public MemberEntity MemberEntity { get; set; }
+        public virtual MemberEntity MemberEntity { get; set; }
     }
 }

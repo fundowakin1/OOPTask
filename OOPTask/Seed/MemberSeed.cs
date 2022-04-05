@@ -87,7 +87,7 @@ namespace OOPTask.Seed
             var counter = 0;
             while (counter < QuantityOfVampires+QuantityOfMages)
             {
-                var random = RandomNumberGenerator.GetInt32(1, _members.Length+1);
+                var random = RandomNumberGenerator.GetInt32(1, _members.Length);
                 if (_members[random].IsVampire==false && counter<QuantityOfVampires)
                 {
                     counter++;

@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 using OOPTask.Models;
 
-namespace OOPTask
+namespace OOPTask.Contexts
 {
     public class PlayerContext : DbContext
     {
@@ -16,7 +15,8 @@ namespace OOPTask
         
         protected override void OnConfiguring(DbContextOptionsBuilder Options)  
         {
-            Options.UseSqlServer("Server=DESKTOP-GFLE9ES\\MYSQLSERVER;Database=PlayerDB;Trusted_Connection=True;");
+            Options.UseLazyLoadingProxies()
+                .UseSqlServer("Server=DESKTOP-GFLE9ES\\MYSQLSERVER;Database=PlayerDB;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

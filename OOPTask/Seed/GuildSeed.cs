@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OOPTask.Models;
 
 namespace OOPTask.Seed
 {

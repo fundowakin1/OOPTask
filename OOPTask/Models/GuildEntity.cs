@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using OOPTask.Models;
 
-namespace OOPTask
+namespace OOPTask.Models
 {
     public class GuildEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<MemberEntity> Members { get; set; }
+        public virtual ICollection<MemberEntity> Members { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 using OOPTask.Models;
 using OOPTask.Seed;
 
-namespace OOPTask
+namespace OOPTask.Contexts
 {
     public class GuildContext : DbContext
     {
@@ -17,7 +17,8 @@ namespace OOPTask
         
         protected override void OnConfiguring(DbContextOptionsBuilder Options)  
         {
-            Options.UseSqlServer("Server=DESKTOP-GFLE9ES\\MYSQLSERVER;Database=GuildDB;Trusted_Connection=True;");
+            Options.UseLazyLoadingProxies()
+                .UseSqlServer("Server=DESKTOP-GFLE9ES\\MYSQLSERVER;Database=GuildDB;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

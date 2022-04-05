@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int GuildId { get; set; }
-        public GuildEntity GuildEntity { get; set; }
-        public MemberInfoEntity MemberInfoEntity { get; set; }
+        public virtual GuildEntity GuildEntity { get; set; }
+        public virtual MemberInfoEntity MemberInfoEntity { get; set; }
     }
 }
