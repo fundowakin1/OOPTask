@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
@@ -94,7 +95,8 @@ namespace OOPTask.GameEntities.Guilds
             Console.WriteLine("Please, tell me how much you can pay for your life? :");
             var amountOfMoney = Console.ReadLine();
             if (string.IsNullOrEmpty(amountOfMoney)||string.IsNullOrWhiteSpace(amountOfMoney)
-                                                   ||!decimal.TryParse(amountOfMoney,out var amountOfMoneyParsed))
+                                                   ||!decimal.TryParse(amountOfMoney,NumberStyles.AllowDecimalPoint,
+                                                        CultureInfo.CreateSpecificCulture("fr-FR"), out var amountOfMoneyParsed))
             {
                 Console.WriteLine("You have lost your chance to hire an assassin. Try again!");
                 _numberOfRetries--;

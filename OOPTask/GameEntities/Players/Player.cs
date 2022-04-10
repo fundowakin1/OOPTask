@@ -9,9 +9,12 @@ namespace OOPTask.GameEntities.Players
         public string Name { get; set; }
         public string Gender { get; set; }
         public string Race { get; set; }
+        public int AmountOfTurns { get; set; } = 0;
         public decimal AmountOfMoney { get; set; } = 100m;
         public bool IsAlive { get; set; }
         private PlayerContext _context;
+        
+        
 
         public Player(string name, string gender, int raceId, PlayerContext context)
         {
@@ -39,7 +42,7 @@ namespace OOPTask.GameEntities.Players
             _context.Players.Add(new PlayerEntity
             {
                 IsAlive = IsAlive,
-                AmountOfTurns = 5
+                AmountOfTurns = AmountOfTurns
             });
             _context.SaveChanges();
             _context.PlayersInfo.Add(new PlayerInfoEntity
