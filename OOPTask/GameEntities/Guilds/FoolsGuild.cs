@@ -3,6 +3,7 @@ using System.Linq;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
 using OOPTask.Models;
+using OOPTask.Output;
 
 namespace OOPTask.GameEntities.Guilds
 {
@@ -31,6 +32,7 @@ namespace OOPTask.GameEntities.Guilds
             Console.WriteLine(" Greetings, can you help me with some stuff...\n My partner clown-Jack is sick, can you replace him today");
             Console.WriteLine("What would you do?");
             Console.WriteLine("You can help your friend (type \"1\") or you can just go away (type \"2\") he probably will be upset.");
+            GreetingSpecialChosenMember();
         }
 
         private protected override void InteractionWithPlayersMoney(Player player)
@@ -38,6 +40,9 @@ namespace OOPTask.GameEntities.Guilds
             while (_numberOfRetries>0)
             {
                 var playersAnswer = Console.ReadLine();
+                SpecialChosenMemberReaction(playersAnswer, player);
+                if (player.HasWon || !player.IsAlive)
+                    break;
                 switch (playersAnswer)
                 {
                     case "1":
@@ -50,7 +55,7 @@ namespace OOPTask.GameEntities.Guilds
                         DefaultPlayersAnswer(player);
                         break;
                 }
-                if (!player.IsAlive || playersAnswer is "1" or "2")
+                if (!player.IsAlive || playersAnswer is "1" or "2" || player.HasWon)
                 {
                     Console.WriteLine(); 
                     break;
@@ -65,8 +70,14 @@ namespace OOPTask.GameEntities.Guilds
         private protected override void PositivePlayersAnswer(Player player)
         {
             player.AmountOfMoney += ChosenMember.MemberInfoEntity.AmountOfMoney;
+            var parts = MoneyFormatting.SplitDecimalToString(ChosenMember.MemberInfoEntity.AmountOfMoney);
             Console.WriteLine("You helped him, at the and of the day he gave you some cash.");
-            Console.WriteLine($"you received {ChosenMember.MemberInfoEntity.AmountOfMoney}");
+            if (parts[0] != 0 && parts[1] != 0)
+                Console.WriteLine($"You received: {parts[0]} AM$ and {parts[1]} pennies.");
+            if (parts[0] == 0 && parts[1] != 0)
+                Console.WriteLine($"You received: {parts[1]} pennies.");
+            if (parts[0] != 0 && parts[1] == 0)
+                Console.WriteLine($"You received: {parts[0]} AM$.");
         }
 
         private protected override void NegativePlayersAnswer(Player player)

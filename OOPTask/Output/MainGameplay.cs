@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Security.Cryptography;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Guilds;
@@ -29,13 +30,26 @@ namespace OOPTask.Output
             GuildContext   = new GuildContext();
             PlayerContext = new PlayerContext();
             Console.WriteLine("Type name of your character:");
-            var name = Console.ReadLine();
-            Console.WriteLine("Type gender of your character:");
-            var gender = Console.ReadLine();
-            Console.WriteLine("Type number of your character's race:");
-            Console.WriteLine("Human: 1, Elven: 2, Gnome: 3, Vampire 4");
-            var raceId = int.Parse(Console.ReadLine());
-            Player = new Player(name,gender,raceId, PlayerContext);
+            try
+            {
+                var name = Console.ReadLine();
+                if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+                    throw new Exception("Name must be written!");
+
+                Console.WriteLine("Type number of your character's race:");
+                Console.WriteLine("Human: 1, Elven: 2, Gnome: 3, Vampire 4");
+                var raceId = int.Parse(Console.ReadLine() ?? throw new Exception("You should write proper value!"));
+
+                if (raceId<1 || raceId>4)
+                    throw new Exception("You should write proper value!");
+
+                Player = new Player(name, raceId, PlayerContext);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Environment.Exit(1);
+            }
         }
 
         private static void IntroductoryOutput()
@@ -52,18 +66,17 @@ namespace OOPTask.Output
 
         private static void PlayersMoneyOutput()
         {
-            var money = Player.AmountOfMoney.ToString("0.00", CultureInfo.InvariantCulture);
-            var parts = money.Split('.'); 
-            int? dollarPart = int.Parse(parts[0]);
-            int? pennyPart = int.Parse(parts[1]);
+            var parts = MoneyFormatting.SplitDecimalToString(Player.AmountOfMoney);
 
-            if (dollarPart!=0 && pennyPart!=0)
-                Console.WriteLine($"Your balance: {dollarPart} AM$ and {pennyPart} pennies.");
-            if (dollarPart==0&&pennyPart!=0)
-                Console.WriteLine($"Your balance: {pennyPart} pennies.");
-            if (dollarPart!=0&&pennyPart==0)
-                Console.WriteLine($"Your balance: {dollarPart} AM$.");
+            if (parts[0]!= 0 && parts[1] != 0)
+                Console.WriteLine($"Your balance: {parts[0]} AM$ and {parts[1]} pennies.");
+            if (parts[0] == 0&& parts[1] != 0)
+                Console.WriteLine($"Your balance: {parts[1]} pennies.");
+            if (parts[0] != 0&& parts[1] == 0)
+                Console.WriteLine($"Your balance: {parts[0]} AM$.");
         }
+
+        
 
         private static void Gameplay()
         {
@@ -88,12 +101,14 @@ namespace OOPTask.Output
                 chosenGuild.InteractionWithPlayer(Player);
                 PlayersMoneyOutput();
                 Player.AmountOfTurns++;
+                if (Player.HasWon)
+                    break;
             }
         }
 
         private static void FinalOutput()
         {
-            if (Player.IsAlive)
+            if (Player.HasWon)
                 Console.WriteLine($"Good job {Player.Name}. You were able to survive in this mad city!");
             else
                 Console.WriteLine("You should have prepared to anything in this city, but unfortunately you didn't. " +

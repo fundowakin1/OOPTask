@@ -28,9 +28,10 @@ namespace OOPTask.GameEntities.Guilds
         private protected override void GreetingMessage()
         {
             Console.WriteLine($"Poor you. You've met ditty thief {ChosenMember.MemberInfoEntity.Name}");
-            Console.WriteLine($" - He-he! Turn out your pockets!");
+            Console.WriteLine(" - He-he! Turn out your pockets!");
             Console.WriteLine("What would you do?");
             Console.WriteLine("You can give him some money (type \"1\") or you can try your best to run away (type \"2\").");
+            GreetingSpecialChosenMember();
         }
 
         private protected override void InteractionWithPlayersMoney(Player player)
@@ -38,6 +39,9 @@ namespace OOPTask.GameEntities.Guilds
             while (_numberOfRetries>0)
             {
                 var playersAnswer = Console.ReadLine();
+                SpecialChosenMemberReaction(playersAnswer, player);
+                if (player.HasWon||!player.IsAlive)
+                    break;
                 switch (playersAnswer)
                 {
                     case "1":
@@ -54,7 +58,7 @@ namespace OOPTask.GameEntities.Guilds
                 {
                     player.IsAlive = false;
                 }
-                if (!player.IsAlive || playersAnswer=="1")
+                if (!player.IsAlive || playersAnswer=="1" || player.HasWon)
                 {
                     Console.WriteLine(); 
                     break;

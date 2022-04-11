@@ -34,6 +34,9 @@ namespace OOPTask.GameEntities.Guilds
             while (_numberOfRetries>0)
             {
                 var playersAnswer = Console.ReadLine();
+                SpecialChosenMemberReaction(playersAnswer, player);
+                if (player.HasWon || !player.IsAlive)
+                    break;
                 switch (playersAnswer)
                 {
                     case "1":
@@ -86,6 +89,7 @@ namespace OOPTask.GameEntities.Guilds
             Console.WriteLine(" - Please, give me some coins, good fellow\n How does he know your name?");
             Console.WriteLine("What would you do?");
             Console.WriteLine("You can give him some money (type \"1\") or you can try your best to run away (type \"2\").");
+            GreetingSpecialChosenMember();
         }
     }
 }
