@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
@@ -10,6 +11,7 @@ namespace OOPTask.GameEntities.Guilds
     {
         private Dictionary<int, (bool,decimal,decimal)> _occupationDictionary;
         private static decimal _delta = 10;
+        
         public AssassinsGuild(GuildContext context, string guildName) : base(context, guildName)
         {
             _occupationDictionary = new Dictionary<int, (bool,decimal,decimal)>();
@@ -20,74 +22,18 @@ namespace OOPTask.GameEntities.Guilds
             }
         }
 
-        public void InteractionWithPlayersMoney(Player player)
+        public override void InteractionWithPlayer(Player player)
+        {
+            ChangingOccupationStatus();
+            base.InteractionWithPlayer(player);
+        }
+
+        private protected override void GreetingMessage()
         {
             Console.WriteLine("You found out that you’re under Assassins Guild contract");
             Console.WriteLine("What would you do?");
-            Console.WriteLine("You can pay some money to hire an assassin for your protection (type \"1\") or you can pray for your life (type \"2\").");
-            
-            ChangingOccupationStatus();
-            var notOccupiedAssassins = _occupationDictionary.Where(x => x.Value.Item1).ToList();
-            var numberOfRetries = 2;
-            while (true)
-            {
-                var playersAnswer = Console.ReadLine();
-                switch (playersAnswer)
-                {
-                    case "1":
-                        Console.WriteLine("Please, tell me how much you can pay for your life? :");
-                        var amountOfMoney = Console.ReadLine();
-                        if (string.IsNullOrEmpty(amountOfMoney)||string.IsNullOrWhiteSpace(amountOfMoney)
-                                                               ||!decimal.TryParse(amountOfMoney,out var amountOfMoneyParsed))
-                        {
-                            Console.WriteLine("You have your last chance to hire an assassin!");
-                            numberOfRetries--;
-                            break;
-                        }
-                        var playersMoney = player.AmountOfMoney;
-                        
-                        if (player.AmountOfMoney<0)
-                        {
-                            Console.WriteLine("Your pockets are empty");
-                            player.IsAlive = false;
-                            break;
-                        }
-                        else if (notOccupiedAssassins.Any(x => x.Value.Item2 < amountOfMoneyParsed
-                                                               && x.Value.Item3 > amountOfMoneyParsed))
-                        {
-                            Console.WriteLine("You successfully hired professional assassin, but it turned out that no one was hunting for you");
-                            player.AmountOfMoney -= amountOfMoneyParsed;
-                            break;
-                        }
-
-                        Console.WriteLine("There are no assassins for your amount of gold. Try once more.");
-                        numberOfRetries--;
-                        playersAnswer = " ";
-                        break;
-                    case "2":
-                        player.IsAlive = false;
-                        Console.WriteLine("You decided to choose death! Assassin kills you!");
-                        
-                        break;
-                    default:
-                        Console.WriteLine("Please, write 1 or 2!");
-                        if (numberOfRetries==0)
-                        {
-                            Console.WriteLine("You should have followed instructions and haven't written this bullshit!");
-                            player.IsAlive = false;
-                            break;
-                        }
-                        Console.WriteLine($"Number of retries: {--numberOfRetries}");
-                        break;
-                }
-                if (!player.IsAlive || playersAnswer=="1")
-                {
-                    Console.WriteLine(); 
-                    break;
-                }
-            }
         }
-        
+
         private void ChangingOccupationStatus()
         {
             for (int i = 1; i < _occupationDictionary.Count; i++)
@@ -110,5 +56,78 @@ namespace OOPTask.GameEntities.Guilds
                 }
             }
         }
+
+        private protected override void InteractionWithPlayersMoney(Player player)
+        {
+            while (_numberOfRetries>0)
+            {
+                Console.WriteLine("You can pay some money to hire an assassin for your protection (type \"1\") or you can pray for your life (type \"2\").");
+                var playersAnswer = Console.ReadLine();
+                var playersMoney = player.AmountOfMoney;
+                switch (playersAnswer)
+                {
+                    case "1":
+                        PositivePlayersAnswer(player);
+                        break;
+                    case "2":
+                        NegativePlayersAnswer(player);
+                        break;
+                    default:
+                        DefaultPlayersAnswer(player);
+                        break;
+                }
+                if (_numberOfRetries==0)
+                {
+                    Console.WriteLine("You lost a chance to make decision. Now you die!");
+                    player.IsAlive = false;
+                    break;
+                }
+                if (!player.IsAlive || player.AmountOfMoney<playersMoney)
+                {
+                    Console.WriteLine(); 
+                    break;
+                }
+            }
+        }
+        private protected override void PositivePlayersAnswer(Player player)
+        {
+            var notOccupiedAssassins = _occupationDictionary.Where(x => x.Value.Item1).ToList();
+            Console.WriteLine("Please, tell me how much you can pay for your life? :");
+            var amountOfMoney = Console.ReadLine();
+            if (string.IsNullOrEmpty(amountOfMoney)||string.IsNullOrWhiteSpace(amountOfMoney)
+                                                   ||!decimal.TryParse(amountOfMoney,NumberStyles.AllowDecimalPoint,
+                                                        CultureInfo.CreateSpecificCulture("fr-FR"), out var amountOfMoneyParsed))
+            {
+                Console.WriteLine("You have lost your chance to hire an assassin. Try again!");
+                _numberOfRetries--;
+                return;
+            }
+                        
+            if (player.AmountOfMoney<0)
+            {
+                Console.WriteLine("Your pockets are empty");
+                player.IsAlive = false;
+                return;
+            }
+
+            if (notOccupiedAssassins.Any(x => x.Value.Item2 < amountOfMoneyParsed
+                                              && x.Value.Item3 > amountOfMoneyParsed))
+            {
+                Console.WriteLine("You successfully hired professional assassin, but it turned out that no one was hunting for you");
+                player.AmountOfMoney -= amountOfMoneyParsed;
+                return;
+            }
+
+            Console.WriteLine("There are no assassins for your amount of gold.");
+            _numberOfRetries--;
+            
+        }
+
+        private protected override void NegativePlayersAnswer(Player player)
+        {
+            player.IsAlive = false;
+            Console.WriteLine("You decided to choose death! Assassin kills you!");
+        }
+        
     }
 }

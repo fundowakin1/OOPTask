@@ -3,6 +3,7 @@ using System.Linq;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
 using OOPTask.Models;
+using OOPTask.Output;
 
 namespace OOPTask.GameEntities.Guilds
 {
@@ -18,45 +19,70 @@ namespace OOPTask.GameEntities.Guilds
             var id = _membersId[chosenMemberId];
             ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
-        public void InteractionWithPlayersMoney(Player player)
+
+        public override void InteractionWithPlayer(Player player)
         {
             ChoosingMember();
+            base.InteractionWithPlayer(player);
+        }
+
+        private protected override void GreetingMessage()
+        {
             Console.WriteLine($"You've met a very good friend of yours {ChosenMember.MemberInfoEntity.Name}");
-            Console.WriteLine($" Greetings, {player.Name}, can you help me with some stuff...\n My partner clown-Jack is sick, can you replace him today");
+            Console.WriteLine(" Greetings, can you help me with some stuff...\n My partner clown-Jack is sick, can you replace him today");
             Console.WriteLine("What would you do?");
             Console.WriteLine("You can help your friend (type \"1\") or you can just go away (type \"2\") he probably will be upset.");
-            var numberOfRetries = 3;
-            while (true)
+            GreetingSpecialChosenMember();
+        }
+
+        private protected override void InteractionWithPlayersMoney(Player player)
+        {
+            while (_numberOfRetries>0)
             {
                 var playersAnswer = Console.ReadLine();
+                SpecialChosenMemberReaction(playersAnswer, player);
+                if (player.HasWon || !player.IsAlive)
+                    break;
                 switch (playersAnswer)
                 {
                     case "1":
-                        player.AmountOfMoney += ChosenMember.MemberInfoEntity.AmountOfMoney;
-                        Console.WriteLine("You helped him, at the and of the day he gave you some cash.");
-                            Console.WriteLine($"you received {ChosenMember.MemberInfoEntity.AmountOfMoney}");
+                        PositivePlayersAnswer(player);
                         break;
                     case "2":
-                        player.IsAlive = false;
-                        Console.WriteLine("You decided not to helped him. Sad clown goes away");
+                        NegativePlayersAnswer(player);
                         break;
                     default:
-                        Console.WriteLine("Please, write 1 or 2!");
-                        if (numberOfRetries==0)
-                        {
-                            Console.WriteLine("You should have followed instructions and haven't written this bullshit!");
-                            player.IsAlive = false;
-                            break;
-                        }
-                        Console.WriteLine($"Number of retries: {--numberOfRetries}");
+                        DefaultPlayersAnswer(player);
                         break;
                 }
-                if (!player.IsAlive || playersAnswer=="1")
+                if (!player.IsAlive || playersAnswer is "1" or "2" || player.HasWon)
                 {
                     Console.WriteLine(); 
                     break;
                 }
+                if (_numberOfRetries==0)
+                {
+                    player.IsAlive = false;
+                }
             }
+        }
+
+        private protected override void PositivePlayersAnswer(Player player)
+        {
+            player.AmountOfMoney += ChosenMember.MemberInfoEntity.AmountOfMoney;
+            var parts = MoneyFormatting.SplitDecimalToString(ChosenMember.MemberInfoEntity.AmountOfMoney);
+            Console.WriteLine("You helped him, at the and of the day he gave you some cash.");
+            if (parts[0] != 0 && parts[1] != 0)
+                Console.WriteLine($"You received: {parts[0]} AM$ and {parts[1]} pennies.");
+            if (parts[0] == 0 && parts[1] != 0)
+                Console.WriteLine($"You received: {parts[1]} pennies.");
+            if (parts[0] != 0 && parts[1] == 0)
+                Console.WriteLine($"You received: {parts[0]} AM$.");
+        }
+
+        private protected override void NegativePlayersAnswer(Player player)
+        {
+            Console.WriteLine("You decided not to help him. Sad clown goes away");
         }
     }
 }

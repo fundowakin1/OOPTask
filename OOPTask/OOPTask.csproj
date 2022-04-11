@@ -6,9 +6,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="BetterConsoleTables" Version="2.0.4-rc1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.15" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.15" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.15" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Table, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\Table\Table\bin\Debug\net5.0\Table.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
