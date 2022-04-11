@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Guilds;
 using OOPTask.GameEntities.Players;
@@ -114,6 +115,7 @@ namespace OOPTask.Output
                 Console.WriteLine("You should have prepared to anything in this city, but unfortunately you didn't. " +
                                   "Now your body breathlessly lies on the ground");
             Player.PutPlayerToDb();
+            PlayerContext.Dispose();
         }
     }
 }

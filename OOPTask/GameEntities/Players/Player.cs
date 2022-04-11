@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using OOPTask.Contexts;
 using OOPTask.Models;
 
@@ -53,6 +54,7 @@ namespace OOPTask.GameEntities.Players
                 PlayerId = _context.Players.Count()
             });
             _context.SaveChanges();
+            _context.Dispose();
         }
     }
 }

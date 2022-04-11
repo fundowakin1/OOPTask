@@ -10,6 +10,7 @@ namespace OOPTask
         static void Main(string[] args)
         {
             MainGameplay.MainOutput();
+            ScoreTable.OutputScoreTable();
         }
     }
 }

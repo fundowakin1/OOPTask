@@ -18,7 +18,7 @@ namespace OOPTask.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder Options)  
         {
             Options.UseLazyLoadingProxies()
-                .UseSqlServer("Server=localhost;Database=GuildDB;Trusted_Connection=True;");
+                .UseSqlServer("Server=localhost;Database=GuildDB;Trusted_Connection=True;MultipleActiveResultSets=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
