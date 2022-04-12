@@ -2,7 +2,7 @@
 using System.Linq;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
-using OOPTask.Models;
+using OOPTask.Interfaces;
 
 namespace OOPTask.GameEntities.Guilds
 {
@@ -11,13 +11,7 @@ namespace OOPTask.GameEntities.Guilds
         public ThievesGuild(GuildContext context, string guildName) : base(context, guildName)
         {
         }
-        public void ChoosingMember()
-        {
-            var random = new Random();
-            var chosenMemberId = random.Next(0, _membersId.Count);
-            var id = _membersId[chosenMemberId];
-            ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
-        }
+        
 
         public override void InteractionWithPlayer(Player player)
         {
@@ -68,7 +62,7 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void PositivePlayersAnswer(Player player)
         {
-            player.AmountOfMoney -= 10;
+            player.GiveMoney(ChosenMember.MemberInfoEntity.AmountOfMoney);
             if (player.AmountOfMoney<0)
             {
                 Console.WriteLine("No money, no life(");
@@ -82,6 +76,14 @@ namespace OOPTask.GameEntities.Guilds
         {
             player.IsAlive = false;
             Console.WriteLine("You decided to choose death! Thief stabbed you in the back(");
+        }
+
+        public void ChoosingMember()
+        {
+            var random = new Random();
+            var chosenMemberId = random.Next(0, _membersId.Count);
+            var id = _membersId[chosenMemberId];
+            ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
     }
 }

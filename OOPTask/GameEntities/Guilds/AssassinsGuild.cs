@@ -9,18 +9,20 @@ namespace OOPTask.GameEntities.Guilds
 {
     public class AssassinsGuild : Guild
     {
-        private Dictionary<int, (bool,decimal,decimal)> _occupationDictionary;
-        private static decimal _delta = 10;
-        
+        private const decimal Delta = 10;
+        public Dictionary<int, InfoAboutAssassin> OccupationDictionary { get; set; }
+
         public AssassinsGuild(GuildContext context, string guildName) : base(context, guildName)
         {
-            _occupationDictionary = new Dictionary<int, (bool,decimal,decimal)>();
+            OccupationDictionary = new Dictionary<int, InfoAboutAssassin>();
             for (int i = 0; i < _membersId.Count; i++)
             {
                 var higherBound = context.Members.FirstOrDefault(x => x.Id == _membersId[i])!.MemberInfoEntity.AmountOfMoney;
-                _occupationDictionary.Add(_membersId[i], (true, higherBound-_delta,higherBound));
+                OccupationDictionary.Add(_membersId[i], new InfoAboutAssassin(true, higherBound-Delta, higherBound));
             }
         }
+
+        public AssassinsGuild() {}
 
         public override void InteractionWithPlayer(Player player)
         {
@@ -32,29 +34,6 @@ namespace OOPTask.GameEntities.Guilds
         {
             Console.WriteLine("You found out that you’re under Assassins Guild contract");
             Console.WriteLine("What would you do?");
-        }
-
-        private void ChangingOccupationStatus()
-        {
-            for (int i = 1; i < _occupationDictionary.Count; i++)
-            {
-                var valueTuple = _occupationDictionary[i];
-                valueTuple.Item1 = true;
-                _occupationDictionary[i] = valueTuple;
-            }
-            var counter = 0;
-            while (counter<_occupationDictionary.Count/2)
-            {
-                var random = new Random();
-                var assassinId = random.Next(1 , _occupationDictionary.Count);
-                var valueTuple = _occupationDictionary[assassinId];
-                if (valueTuple.Item1)
-                {
-                    valueTuple.Item1 = false;
-                    _occupationDictionary[assassinId] = valueTuple;
-                    counter++;
-                }
-            }
         }
 
         private protected override void InteractionWithPlayersMoney(Player player)
@@ -89,9 +68,10 @@ namespace OOPTask.GameEntities.Guilds
                 }
             }
         }
+
         private protected override void PositivePlayersAnswer(Player player)
         {
-            var notOccupiedAssassins = _occupationDictionary.Where(x => x.Value.Item1).ToList();
+            var notOccupiedAssassins = OccupationDictionary.Where(x => x.Value.IsOccupied).ToList();
             Console.WriteLine("Please, tell me how much you can pay for your life? :");
             var amountOfMoney = Console.ReadLine();
             if (string.IsNullOrEmpty(amountOfMoney)||string.IsNullOrWhiteSpace(amountOfMoney)
@@ -110,11 +90,11 @@ namespace OOPTask.GameEntities.Guilds
                 return;
             }
 
-            if (notOccupiedAssassins.Any(x => x.Value.Item2 < amountOfMoneyParsed
-                                              && x.Value.Item3 > amountOfMoneyParsed))
+            if (notOccupiedAssassins.Any(x => x.Value.LowerFeeBound < amountOfMoneyParsed
+                                              && x.Value.UpperFeeBound > amountOfMoneyParsed))
             {
                 Console.WriteLine("You successfully hired professional assassin, but it turned out that no one was hunting for you");
-                player.AmountOfMoney -= amountOfMoneyParsed;
+                player.GiveMoney(amountOfMoneyParsed);
                 return;
             }
 
@@ -128,6 +108,36 @@ namespace OOPTask.GameEntities.Guilds
             player.IsAlive = false;
             Console.WriteLine("You decided to choose death! Assassin kills you!");
         }
-        
+
+        public void ChangingOccupationStatus()
+        {
+            for (int i = 1; i < OccupationDictionary.Count; i++)
+            {
+                OccupationDictionary[i].IsOccupied = true;
+            }
+            var counter = 0;
+            while (counter < OccupationDictionary.Count / 2)
+            {
+                var random = new Random();
+                var assassinId = random.Next(1, OccupationDictionary.Count);
+                if (!OccupationDictionary[assassinId].IsOccupied) continue;
+                OccupationDictionary[assassinId].IsOccupied = false;
+                counter++;
+            }
+        }
+
+    }
+    public class InfoAboutAssassin
+    {
+        public bool IsOccupied { get; set; }
+        public decimal LowerFeeBound { get; set; }
+        public decimal UpperFeeBound { get; set; }
+
+        public InfoAboutAssassin(bool isOccupied, decimal lowerFeeBound, decimal upperFeeBound)
+        {
+            IsOccupied = isOccupied;
+            LowerFeeBound = lowerFeeBound;
+            UpperFeeBound = upperFeeBound;
+        }
     }
 }

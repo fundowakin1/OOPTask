@@ -1,6 +1,6 @@
 ﻿using OOPTask.Models;
 
-namespace OOPTask
+namespace OOPTask.Interfaces
 {
     public interface IChoosingMember
     { 

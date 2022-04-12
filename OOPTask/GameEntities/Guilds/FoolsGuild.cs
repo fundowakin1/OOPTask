@@ -2,7 +2,7 @@
 using System.Linq;
 using OOPTask.Contexts;
 using OOPTask.GameEntities.Players;
-using OOPTask.Models;
+using OOPTask.Interfaces;
 using OOPTask.Output;
 
 namespace OOPTask.GameEntities.Guilds
@@ -11,13 +11,6 @@ namespace OOPTask.GameEntities.Guilds
     {
         public FoolsGuild(GuildContext context, string guildName) : base(context, guildName)
         {
-        }
-        public void ChoosingMember()
-        {
-            var random = new Random();
-            var chosenMemberId = random.Next(0, _membersId.Count);
-            var id = _membersId[chosenMemberId];
-            ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
 
         public override void InteractionWithPlayer(Player player)
@@ -69,7 +62,7 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void PositivePlayersAnswer(Player player)
         {
-            player.AmountOfMoney += ChosenMember.MemberInfoEntity.AmountOfMoney;
+            player.ReceiveMoney(ChosenMember.MemberInfoEntity.AmountOfMoney);
             var parts = MoneyFormatting.SplitDecimalToString(ChosenMember.MemberInfoEntity.AmountOfMoney);
             Console.WriteLine("You helped him, at the and of the day he gave you some cash.");
             if (parts[0] != 0 && parts[1] != 0)
@@ -83,6 +76,14 @@ namespace OOPTask.GameEntities.Guilds
         private protected override void NegativePlayersAnswer(Player player)
         {
             Console.WriteLine("You decided not to help him. Sad clown goes away");
+        }
+
+        public void ChoosingMember()
+        {
+            var random = new Random();
+            var chosenMemberId = random.Next(0, _membersId.Count);
+            var id = _membersId[chosenMemberId];
+            ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OOPTask.Contexts;
 
 namespace OOPTask.Output
@@ -13,7 +9,6 @@ namespace OOPTask.Output
 
         public static void OutputScoreTable()
         {
-            
             Console.WriteLine("\n\n\nDo you want to see score table?\nIf the answer is yes, press \"1\"");
             var playersAnswer = Console.ReadLine();
             if (playersAnswer=="1")

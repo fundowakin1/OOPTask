@@ -16,6 +16,10 @@ namespace OOPTask.GameEntities.Guilds
         protected static int _numberOfRetries = 3;
         public MemberEntity ChosenMember { get; set; }
         protected ChosenMemberState MemberState { get; set; }
+
+        protected Guild()
+        {
+        }
         protected Guild(GuildContext context, string guildName)
         {
             _context = context;

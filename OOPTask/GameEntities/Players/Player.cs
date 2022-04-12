@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using OOPTask.Contexts;
 using OOPTask.Models;
 
@@ -11,11 +10,13 @@ namespace OOPTask.GameEntities.Players
         public string Race { get; set; }
         public int AmountOfTurns { get; set; } = 0;
         public bool HasWon { get; set; } = false;
-        public decimal AmountOfMoney { get; set; } = 100m;
+        public decimal AmountOfMoney { get; private set; } = 100m;
         public bool IsAlive { get; set; }
-        private PlayerContext _context;
-        
-        
+        private readonly PlayerContext _context;
+
+        public Player()
+        {
+        }
 
         public Player(string name, int raceId, PlayerContext context)
         {
@@ -55,6 +56,16 @@ namespace OOPTask.GameEntities.Players
             });
             _context.SaveChanges();
             _context.Dispose();
+        }
+
+        public void ReceiveMoney(decimal money)
+        {
+            AmountOfMoney += money;
+        }
+
+        public void GiveMoney(decimal money)
+        {
+            AmountOfMoney -= money;
         }
     }
 }
