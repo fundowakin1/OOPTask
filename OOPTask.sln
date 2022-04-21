@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOPTask", "OOPTask\OOPTask.csproj", "{AA729C9F-35F3-4308-BCD9-3B8698875101}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOPTask", "OOPTask\OOPTask.csproj", "{AA729C9F-35F3-4308-BCD9-3B8698875101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOPTask.Tests", "OOPTask.Tests\OOPTask.Tests.csproj", "{9B4650B7-4E81-475F-81D8-83DFC9DEF0D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{AA729C9F-35F3-4308-BCD9-3B8698875101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA729C9F-35F3-4308-BCD9-3B8698875101}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA729C9F-35F3-4308-BCD9-3B8698875101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B4650B7-4E81-475F-81D8-83DFC9DEF0D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B4650B7-4E81-475F-81D8-83DFC9DEF0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B4650B7-4E81-475F-81D8-83DFC9DEF0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4650B7-4E81-475F-81D8-83DFC9DEF0D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D83B09B3-302C-47A0-B763-A76141191182}
 	EndGlobalSection
 EndGlobal

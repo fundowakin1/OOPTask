@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=912bf6f1_002D2106_002D4cc5_002Db794_002D19c91647e3bf/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="MoneyFormattingTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::9B4650B7-4E81-475F-81D8-83DFC9DEF0D3::net5.0::OOPTask.Tests.MoneyFormattingTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::9B4650B7-4E81-475F-81D8-83DFC9DEF0D3::net5.0::OOPTask.Tests.AssassinsGuildTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::9B4650B7-4E81-475F-81D8-83DFC9DEF0D3::net5.0::OOPTask.Tests.PlayerTests.ReceiveMoney_&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
