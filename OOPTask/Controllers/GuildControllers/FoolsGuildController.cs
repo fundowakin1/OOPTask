@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Linq;
 using OOPTask.Contexts;
+using OOPTask.GameEntities;
 using OOPTask.GameEntities.Players;
 using OOPTask.Interfaces;
 using OOPTask.Output;
+using OOPTask.Seed.GuildMessages;
 
-namespace OOPTask.GameEntities.Guilds
+namespace OOPTask.Controllers.GuildControllers
 {
-    public class FoolsGuild : Guild, IChoosingMember 
+    public class FoolsGuildController : GuildController, IChoosingMember 
     {
-        public FoolsGuild(GuildContext context, string guildName) : base(context, guildName)
+        protected new FoolsGuild _guild { get; set; }
+        public FoolsGuildController(GuildContext context, Guild guild, string guildName) : base(context, guild, guildName)
         {
+            _guild = (FoolsGuild)guild;
+            FoolsMessages.AddFoolsMessages(_guild.MessagesDictionary);
         }
 
         public override void InteractionWithPlayer(Player player)
@@ -21,16 +26,16 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void GreetingMessage()
         {
-            Console.WriteLine($"You've met a very good friend of yours {ChosenMember.MemberInfoEntity.Name}");
-            Console.WriteLine(" Greetings, can you help me with some stuff...\n My partner clown-Jack is sick, can you replace him today");
-            Console.WriteLine("What would you do?");
-            Console.WriteLine("You can help your friend (type \"1\") or you can just go away (type \"2\") he probably will be upset.");
+            Console.WriteLine(_guild.MessagesDictionary["GreetingMessageWithName"] + _guild.ChosenMember.MemberInfoEntity.Name);
+            Console.WriteLine(_guild.MessagesDictionary["GreetingMessage"]);
+
+
             GreetingSpecialChosenMember();
         }
 
         private protected override void InteractionWithPlayersMoney(Player player)
         {
-            while (_numberOfRetries>0)
+            while (Guild.NumberOfRetries>0)
             {
                 var playersAnswer = Console.ReadLine();
                 SpecialChosenMemberReaction(playersAnswer, player);
@@ -53,7 +58,7 @@ namespace OOPTask.GameEntities.Guilds
                     Console.WriteLine(); 
                     break;
                 }
-                if (_numberOfRetries==0)
+                if (Guild.NumberOfRetries == 0)
                 {
                     player.IsAlive = false;
                 }
@@ -62,9 +67,9 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void PositivePlayersAnswer(Player player)
         {
-            player.ReceiveMoney(ChosenMember.MemberInfoEntity.AmountOfMoney);
-            var parts = MoneyFormatting.SplitDecimalToString(ChosenMember.MemberInfoEntity.AmountOfMoney);
-            Console.WriteLine("You helped him, at the and of the day he gave you some cash.");
+            player.ReceiveMoney(_guild.ChosenMember.MemberInfoEntity.AmountOfMoney);
+            var parts = MoneyFormatting.SplitDecimalToString(_guild.ChosenMember.MemberInfoEntity.AmountOfMoney);
+            Console.WriteLine(_guild.MessagesDictionary["HelpMessage"]);
             if (parts[0] != 0 && parts[1] != 0)
                 Console.WriteLine($"You received: {parts[0]} AM$ and {parts[1]} pennies.");
             if (parts[0] == 0 && parts[1] != 0)
@@ -75,15 +80,15 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void NegativePlayersAnswer(Player player)
         {
-            Console.WriteLine("You decided not to help him. Sad clown goes away");
+            Console.WriteLine(_guild.MessagesDictionary["RejectMessage"]);
         }
 
         public void ChoosingMember()
         {
             var random = new Random();
-            var chosenMemberId = random.Next(0, _membersId.Count);
-            var id = _membersId[chosenMemberId];
-            ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
+            var chosenMemberId = random.Next(0, _guild.MembersId.Count);
+            var id = _guild.MembersId[chosenMemberId];
+            _guild.ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
     }
 }

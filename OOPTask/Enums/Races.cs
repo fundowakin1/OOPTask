@@ -1,4 +1,4 @@
-﻿namespace OOPTask.GameEntities.Players
+﻿namespace OOPTask.Enums
 {
     public enum Races
     {
@@ -7,4 +7,5 @@
         Gnome,
         Vampire
     }
+    
 }
