@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using OOPTask.Contexts;
+using OOPTask.GameEntities;
 using OOPTask.GameEntities.Players;
+using OOPTask.Seed.GuildMessages;
 
-namespace OOPTask.GameEntities.Guilds
+namespace OOPTask.Controllers.GuildControllers
 {
-    public class AssassinsGuild : Guild
+    public class AssassinsGuildController : GuildController
     {
-        private const decimal Delta = 10;
-        public Dictionary<int, InfoAboutAssassin> OccupationDictionary { get; set; }
-
-        public AssassinsGuild(GuildContext context, string guildName) : base(context, guildName)
+        public new AssassinsGuild _guild { get; set; }
+        public AssassinsGuildController(GuildContext context, Guild guild, string guildName) : base(context, guild, guildName)
         {
-            OccupationDictionary = new Dictionary<int, InfoAboutAssassin>();
-            for (int i = 0; i < _membersId.Count; i++)
+            _guild = (AssassinsGuild)guild;
+            _guild.OccupationDictionary = new Dictionary<int, InfoAboutAssassin>();
+            for (int i = 0; i < _guild.MembersId.Count; i++)
             {
-                var higherBound = context.Members.FirstOrDefault(x => x.Id == _membersId[i])!.MemberInfoEntity.AmountOfMoney;
-                OccupationDictionary.Add(_membersId[i], new InfoAboutAssassin(true, higherBound-Delta, higherBound));
+                var higherBound = context.Members.FirstOrDefault(x => x.Id == _guild.MembersId[i])!.MemberInfoEntity.AmountOfMoney;
+                _guild.OccupationDictionary.Add(_guild.MembersId[i], new InfoAboutAssassin(true, higherBound - AssassinsGuild.Delta, higherBound));
             }
+
+            AssassinsMessages.AddAssassinsMessages(_guild.MessagesDictionary);
         }
 
-        public AssassinsGuild() {}
+        public AssassinsGuildController() {}
 
         public override void InteractionWithPlayer(Player player)
         {
@@ -32,15 +35,14 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void GreetingMessage()
         {
-            Console.WriteLine("You found out that you’re under Assassins Guild contract");
-            Console.WriteLine("What would you do?");
+            Console.WriteLine(_guild.MessagesDictionary["GreetingMessage"]);
         }
 
         private protected override void InteractionWithPlayersMoney(Player player)
         {
-            while (_numberOfRetries>0)
+            while (Guild.NumberOfRetries >0)
             {
-                Console.WriteLine("You can pay some money to hire an assassin for your protection (type \"1\") or you can pray for your life (type \"2\").");
+                Console.WriteLine(_guild.MessagesDictionary["ChooseMessage"]);
                 var playersAnswer = Console.ReadLine();
                 var playersMoney = player.AmountOfMoney;
                 switch (playersAnswer)
@@ -55,9 +57,9 @@ namespace OOPTask.GameEntities.Guilds
                         DefaultPlayersAnswer(player);
                         break;
                 }
-                if (_numberOfRetries==0)
+                if (Guild.NumberOfRetries == 0)
                 {
-                    Console.WriteLine("You lost a chance to make decision. Now you die!");
+                    Console.WriteLine(_guild.MessagesDictionary["Loose message"]);
                     player.IsAlive = false;
                     break;
                 }
@@ -71,21 +73,21 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void PositivePlayersAnswer(Player player)
         {
-            var notOccupiedAssassins = OccupationDictionary.Where(x => x.Value.IsOccupied).ToList();
-            Console.WriteLine("Please, tell me how much you can pay for your life? :");
+            var notOccupiedAssassins = _guild.OccupationDictionary.Where(x => x.Value.IsOccupied).ToList();
+            Console.WriteLine(_guild.MessagesDictionary["AskingForMoneyMessage"]);
             var amountOfMoney = Console.ReadLine();
             if (string.IsNullOrEmpty(amountOfMoney)||string.IsNullOrWhiteSpace(amountOfMoney)
                                                    ||!decimal.TryParse(amountOfMoney,NumberStyles.AllowDecimalPoint,
                                                         CultureInfo.CreateSpecificCulture("fr-FR"), out var amountOfMoneyParsed))
             {
-                Console.WriteLine("You have lost your chance to hire an assassin. Try again!");
-                _numberOfRetries--;
+                Console.WriteLine(_guild.MessagesDictionary["LostChanceMessage"]);
+                Guild.NumberOfRetries--;
                 return;
             }
                         
             if (player.AmountOfMoney<0)
             {
-                Console.WriteLine("Your pockets are empty");
+                Console.WriteLine(_guild.MessagesDictionary["NoMoneyMessage"]);
                 player.IsAlive = false;
                 return;
             }
@@ -93,51 +95,39 @@ namespace OOPTask.GameEntities.Guilds
             if (notOccupiedAssassins.Any(x => x.Value.LowerFeeBound < amountOfMoneyParsed
                                               && x.Value.UpperFeeBound > amountOfMoneyParsed))
             {
-                Console.WriteLine("You successfully hired professional assassin, but it turned out that no one was hunting for you");
+                Console.WriteLine(_guild.MessagesDictionary["SuccessMessage"]);
                 player.GiveMoney(amountOfMoneyParsed);
                 return;
             }
 
-            Console.WriteLine("There are no assassins for your amount of gold.");
-            _numberOfRetries--;
+            Console.WriteLine(_guild.MessagesDictionary["NoAssassinsMessage"]);
+            Guild.NumberOfRetries--;
             
         }
 
         private protected override void NegativePlayersAnswer(Player player)
         {
             player.IsAlive = false;
-            Console.WriteLine("You decided to choose death! Assassin kills you!");
+            Console.WriteLine(_guild.MessagesDictionary["DeadFromAssassinMessage"]);
         }
 
         public void ChangingOccupationStatus()
         {
-            for (int i = 1; i < OccupationDictionary.Count; i++)
+            for (int i = 1; i < _guild.OccupationDictionary.Count; i++)
             {
-                OccupationDictionary[i].IsOccupied = true;
+                _guild.OccupationDictionary[i].IsOccupied = true;
             }
             var counter = 0;
-            while (counter < OccupationDictionary.Count / 2)
+            while (counter < _guild.OccupationDictionary.Count / 2)
             {
                 var random = new Random();
-                var assassinId = random.Next(1, OccupationDictionary.Count);
-                if (!OccupationDictionary[assassinId].IsOccupied) continue;
-                OccupationDictionary[assassinId].IsOccupied = false;
+                var assassinId = random.Next(1, _guild.OccupationDictionary.Count);
+                if (!_guild.OccupationDictionary[assassinId].IsOccupied) continue;
+                _guild.OccupationDictionary[assassinId].IsOccupied = false;
                 counter++;
             }
         }
 
     }
-    public class InfoAboutAssassin
-    {
-        public bool IsOccupied { get; set; }
-        public decimal LowerFeeBound { get; set; }
-        public decimal UpperFeeBound { get; set; }
-
-        public InfoAboutAssassin(bool isOccupied, decimal lowerFeeBound, decimal upperFeeBound)
-        {
-            IsOccupied = isOccupied;
-            LowerFeeBound = lowerFeeBound;
-            UpperFeeBound = upperFeeBound;
-        }
-    }
+    
 }

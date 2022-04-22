@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Linq;
 using OOPTask.Contexts;
+using OOPTask.GameEntities;
 using OOPTask.GameEntities.Players;
 using OOPTask.Interfaces;
+using OOPTask.Seed.GuildMessages;
 
-namespace OOPTask.GameEntities.Guilds
+namespace OOPTask.Controllers.GuildControllers
 {
-    public class ThievesGuild : Guild, IChoosingMember
+    public class ThievesGuildController : GuildController, IChoosingMember
     {
-        public ThievesGuild(GuildContext context, string guildName) : base(context, guildName)
+        protected new ThievesGuild _guild { get; set; }
+
+        public ThievesGuildController(GuildContext context, Guild guild, string guildName) : base(context, guild, guildName)
         {
+            _guild = (ThievesGuild)guild;
+            ThievesMessages.AddThievesMessages(_guild.MessagesDictionary);
         }
         
 
@@ -21,16 +27,14 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void GreetingMessage()
         {
-            Console.WriteLine($"Poor you. You've met ditty thief {ChosenMember.MemberInfoEntity.Name}");
-            Console.WriteLine(" - He-he! Turn out your pockets!");
-            Console.WriteLine("What would you do?");
-            Console.WriteLine("You can give him some money (type \"1\") or you can try your best to run away (type \"2\").");
+            Console.WriteLine(_guild.MessagesDictionary["GreetingMessageWithName"] + _guild.ChosenMember.MemberInfoEntity.Name);
+            Console.WriteLine(_guild.MessagesDictionary["GreetingMessage"]);
             GreetingSpecialChosenMember();
         }
 
         private protected override void InteractionWithPlayersMoney(Player player)
         {
-            while (_numberOfRetries>0)
+            while (Guild.NumberOfRetries >0)
             {
                 var playersAnswer = Console.ReadLine();
                 SpecialChosenMemberReaction(playersAnswer, player);
@@ -48,7 +52,7 @@ namespace OOPTask.GameEntities.Guilds
                         DefaultPlayersAnswer(player);
                         break;
                 }
-                if (_numberOfRetries==0)
+                if (Guild.NumberOfRetries ==0)
                 {
                     player.IsAlive = false;
                 }
@@ -62,28 +66,28 @@ namespace OOPTask.GameEntities.Guilds
 
         private protected override void PositivePlayersAnswer(Player player)
         {
-            player.GiveMoney(ChosenMember.MemberInfoEntity.AmountOfMoney);
+            player.GiveMoney(_guild.ChosenMember.MemberInfoEntity.AmountOfMoney);
             if (player.AmountOfMoney<0)
             {
-                Console.WriteLine("No money, no life(");
+                Console.WriteLine(_guild.MessagesDictionary["DeathThieveMessage"]);
                 player.IsAlive = false;
                 return;
             }
-            Console.WriteLine("You peacefully gave your cash to this thief.");
+            Console.WriteLine(_guild.MessagesDictionary["GiveCashMessage"]);
         }
 
         private protected override void NegativePlayersAnswer(Player player)
         {
             player.IsAlive = false;
-            Console.WriteLine("You decided to choose death! Thief stabbed you in the back(");
+            Console.WriteLine(_guild.MessagesDictionary["RejectMessage"]);
         }
 
         public void ChoosingMember()
         {
             var random = new Random();
-            var chosenMemberId = random.Next(0, _membersId.Count);
-            var id = _membersId[chosenMemberId];
-            ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
+            var chosenMemberId = random.Next(0, _guild.MembersId.Count);
+            var id = _guild.MembersId[chosenMemberId];
+            _guild.ChosenMember = _context.Members.FirstOrDefault(x => x.Id == id);
         }
     }
 }

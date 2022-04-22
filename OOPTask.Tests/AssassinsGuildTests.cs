@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using OOPTask.GameEntities.Guilds;
+using OOPTask.Controllers.GuildControllers;
+using OOPTask.GameEntities;
 
 namespace OOPTask.Tests
 {
@@ -11,8 +12,7 @@ namespace OOPTask.Tests
         [Test]
         public void ChangingOccupationStatus_WhenCalled_OccupationChanges()
         {
-            var guild = new AssassinsGuild
-            {
+            var  guild = new AssassinsGuild(){
                 OccupationDictionary = new Dictionary<int, InfoAboutAssassin>
                 {
                     { 1, new InfoAboutAssassin(false, 15.5m, 25.5m) },
@@ -21,10 +21,15 @@ namespace OOPTask.Tests
                     { 4, new InfoAboutAssassin(false, 15.5m, 25.5m) }
                 }
             };
+            var guildController = new AssassinsGuildController
+            {
+                _guild = guild,
+                
+            };
 
             var testKeys = guild.OccupationDictionary.Values.ToArray();
 
-            guild.ChangingOccupationStatus();
+            guildController.ChangingOccupationStatus();
 
             var guildKeys = guild.OccupationDictionary.Values.ToArray();
 

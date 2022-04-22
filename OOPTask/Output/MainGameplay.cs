@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using OOPTask.Contexts;
-using OOPTask.GameEntities.Guilds;
+using OOPTask.Controllers.GuildControllers;
+using OOPTask.Controllers.PlayersControllers;
+using OOPTask.GameEntities;
 using OOPTask.GameEntities.Players;
 
 namespace OOPTask.Output
@@ -12,7 +14,7 @@ namespace OOPTask.Output
         private static GuildContext GuildContext { get; set; }
         private static PlayerContext PlayerContext { get; set; }
         private static Player Player { get; set; }
-        private static List<Guild> ListOfGuilds { get; set; }
+        private static List<GuildController> ListOfGuilds { get; set; }
 
         public static void MainOutput()
         {
@@ -78,14 +80,18 @@ namespace OOPTask.Output
 
         private static void Gameplay()
         {
-            var assassinsGuild = new AssassinsGuild(GuildContext, "Ankh-Morpork Assassins' Guild");
-            var thievesGuild = new ThievesGuild(GuildContext, "Guild of Thieves, Cutpurses and Allied Trades");
-            var beggarsGuild = new BeggarsGuild(GuildContext, "Ankh-Morpork Beggars' Guild");
-            var foolsGuild = new FoolsGuild(GuildContext, "The Guild of Fools and Joculators and College of Clowns");
+            var assassinsGuild = new AssassinsGuild();
+            var thievesGuild = new ThievesGuild();
+            var beggarsGuild = new BeggarsGuild();
+            var foolsGuild = new FoolsGuild();
+            var assassinsGuildController = new AssassinsGuildController(GuildContext, assassinsGuild, "Ankh-Morpork Assassins' Guild");
+            var thievesGuildController = new ThievesGuildController(GuildContext, thievesGuild, "Guild of Thieves, Cutpurses and Allied Trades");
+            var beggarsGuildController = new BeggarsGuildController(GuildContext, beggarsGuild, "Ankh-Morpork Beggars' Guild");
+            var foolsGuildController = new FoolsGuildController(GuildContext, foolsGuild, "The Guild of Fools and Joculators and College of Clowns");
             var counter = 0;
             while (Player.IsAlive)
             {
-                ListOfGuilds = new List<Guild>{assassinsGuild, beggarsGuild, foolsGuild, thievesGuild};
+                ListOfGuilds = new List<GuildController>{ assassinsGuildController, beggarsGuildController, foolsGuildController, thievesGuildController };
                 var random = RandomNumberGenerator.GetInt32(0, ListOfGuilds.Count);
                 if (random==4)
                 {
@@ -93,9 +99,9 @@ namespace OOPTask.Output
                 }
                 if (counter>6)
                 {
-                    ListOfGuilds.Remove(thievesGuild);
+                    ListOfGuilds.Remove(thievesGuildController);
                 }
-                Guild chosenGuild = ListOfGuilds[random];
+                GuildController chosenGuild = ListOfGuilds[random];
                 chosenGuild.InteractionWithPlayer(Player);
                 PlayersMoneyOutput();
                 Player.AmountOfTurns++;
@@ -111,7 +117,9 @@ namespace OOPTask.Output
             else
                 Console.WriteLine("You should have prepared to anything in this city, but unfortunately you didn't. " +
                                   "Now your body breathlessly lies on the ground");
-            Player.PutPlayerToDb();
+
+            var playerController = new PlayerController(Player, PlayerContext);
+            playerController.PutPlayerToDb();
             PlayerContext.Dispose();
         }
     }

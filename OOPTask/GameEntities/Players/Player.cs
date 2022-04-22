@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OOPTask.Contexts;
+using OOPTask.Enums;
 using OOPTask.Models;
 
 namespace OOPTask.GameEntities.Players
@@ -10,9 +11,9 @@ namespace OOPTask.GameEntities.Players
         public string Race { get; set; }
         public int AmountOfTurns { get; set; } = 0;
         public bool HasWon { get; set; } = false;
-        public decimal AmountOfMoney { get; private set; } = 100m;
+        public decimal AmountOfMoney { get; set; } = 100m;
         public bool IsAlive { get; set; }
-        private readonly PlayerContext _context;
+        
 
         public Player()
         {
@@ -34,30 +35,7 @@ namespace OOPTask.GameEntities.Players
             {
                 AmountOfMoney = 150m;
             }
-
-            _context = context;
         }
-
-        public void PutPlayerToDb()
-        {
-            _context.Players.Add(new PlayerEntity
-            {
-                IsAlive = IsAlive,
-                AmountOfTurns = AmountOfTurns,
-                HasWon = HasWon,
-            });
-            _context.SaveChanges();
-            _context.PlayersInfo.Add(new PlayerInfoEntity
-            {
-                AmountOfMoney = AmountOfMoney,
-                Name = Name,
-                Race = Race,
-                PlayerId = _context.Players.Count()
-            });
-            _context.SaveChanges();
-            _context.Dispose();
-        }
-
         public void ReceiveMoney(decimal money)
         {
             AmountOfMoney += money;
